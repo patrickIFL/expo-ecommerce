@@ -14,15 +14,12 @@ export default function Index() {
   const styles = useHomeStyles();
 
   return (
-
     <LinearGradient colors={colors.gradients.background} style={styles.container}>
-
       <StatusBar style={colors.statusBarStyle} />
       <SafeAreaView style={styles.safeArea}>
         <TopSearchBar />
         <HeaderSlider />
         <ProductsList />
-
       </SafeAreaView>
     </LinearGradient>
   );

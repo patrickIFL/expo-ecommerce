@@ -123,6 +123,9 @@ export const useHomeStyles = () => {
       alignItems: "center",
       marginBottom: 20,
     },
+    titleContainerNotCentered: {
+      marginBottom: 20,
+    },
     iconContainer: {
       width: 56,
       height: 56,
@@ -371,7 +374,6 @@ export const useHomeStyles = () => {
     gap:5,
     padding: 8,
     paddingBottom: 20,
-    
   },
 
   priceRow: {
@@ -401,6 +403,8 @@ export const useHomeStyles = () => {
     color: colors.text
   },
 
+
+
   });
 
   return styles;
@@ -412,6 +416,12 @@ export const useSettingsStyles = () => {
     container: {
       flex: 1,
     },
+    title: {
+  fontSize: 32,
+  fontWeight: "700",
+  letterSpacing: -1,
+  color: colors.text,
+},
     safeArea: {
       flex: 1,
     },
@@ -432,12 +442,7 @@ export const useSettingsStyles = () => {
       alignItems: "center",
       marginRight: 16,
     },
-    title: {
-      fontSize: 32,
-      fontWeight: "700",
-      letterSpacing: -1,
-      color: colors.text,
-    },
+
     scrollView: {
       flex: 1,
     },

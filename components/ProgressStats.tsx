@@ -37,7 +37,7 @@ const ProgressStats = () => {
 
           <View>
             <Text style={styles.statNumber}>{/*totalTodos*/}10</Text>
-            <Text style={styles.statLabel}>Total Tasks</Text>
+            <Text style={styles.statLabel}>Total Orders</Text>
           </View>
 
 
@@ -56,7 +56,7 @@ const ProgressStats = () => {
 
           <View>
             <Text style={styles.statNumber}>{/*completedTodos*/}10</Text>
-            <Text style={styles.statLabel}>Completed</Text>
+            <Text style={styles.statLabel}>Completed Orders</Text>
           </View>
 
 
@@ -75,7 +75,7 @@ const ProgressStats = () => {
 
           <View>
             <Text style={styles.statNumber}>{/*activeTodos*/}10</Text>
-            <Text style={styles.statLabel}>Pending Tasks</Text>
+            <Text style={styles.statLabel}>Pending Orders</Text>
           </View>
 
 
