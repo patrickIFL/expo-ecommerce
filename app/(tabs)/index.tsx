@@ -4,6 +4,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import ProductsList from "@/components/ProductsList";
 import TopSearchBar from "@/components/TopSearchBar";
 import useTheme from "@/hooks/useTheme";
+import { useUser } from "@clerk/clerk-expo";
 import { useQuery } from "@tanstack/react-query";
 import axios from 'axios';
 import { LinearGradient } from "expo-linear-gradient";
@@ -14,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function Index() {
   const { colors } = useTheme();
   const styles = useHomeStyles();
+  const { user } = useUser()
 
   const {
     data: products = [],
@@ -48,6 +50,7 @@ export default function Index() {
           }
         >
           <TopSearchBar />
+          <Text>Signed in as:  {user?.emailAddresses[0].emailAddress}</Text>
           <HeaderSlider />
 
           {isLoading ? (
