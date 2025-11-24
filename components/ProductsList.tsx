@@ -1,8 +1,9 @@
 import { useHomeStyles } from '@/assets/styles/styles';
 import useTheme from '@/hooks/useTheme';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { FlatList, Image, Text, View } from 'react-native';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 import EmptyState from './EmptyState';
 
 const ProductsList = ({products}) => {
@@ -11,6 +12,7 @@ const ProductsList = ({products}) => {
 
   const renderProductItem = ({ item }: { item: any }) => {
     const productImage = item.image?.[0];
+    const starCount = 4.5;
 
     return (
       <LinearGradient 
@@ -28,6 +30,23 @@ const ProductsList = ({products}) => {
                 style={styles.name}
                 numberOfLines={1}
             >{item.name}</Text>
+            <View style={{flexDirection: "row", alignItems: "center"}}>
+              <Text style={{ color: colors.text, marginRight: 5 }}>{starCount}</Text>
+              {Array.from({ length: 5 }).map((_, index) => (
+                        <Ionicons
+                            key={index}
+                            name='star'
+                            size={12}
+                            color={
+                                index < Math.floor(starCount) // star ratings go here
+                                    ? colors.primary
+                                    : "gray"                            }
+                            alt="star_icon"
+                        />
+                    ))}
+            </View>
+            <View style={{flexDirection: "row"}}>
+
             <View style={styles.priceRow}>
             
             {item.offerPrice && (
@@ -38,6 +57,19 @@ const ProductsList = ({products}) => {
                 <Text style={styles.price}>₱{item.price}</Text>
             )}
 
+            </View>
+            <TouchableOpacity
+    style={{
+      paddingHorizontal: 10,
+      paddingVertical: 3,
+      borderWidth: 1,
+      borderColor: colors.text,
+      borderRadius: 50,
+    }}
+    onPress={() => console.log("Buy now")}
+  >
+    <Text style={{ fontSize: 12, color: colors.text }}>Buy now</Text>
+  </TouchableOpacity>
             </View>
         </View>
       </LinearGradient>

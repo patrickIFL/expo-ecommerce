@@ -7,7 +7,6 @@ import OrdersList from './OrdersList'
 const MyOrders = () => {
     const styles = useHomeStyles()
     const {colors}=useTheme();
-
    const orderDummyData = [
   {
     "id": "67a20934b3db72db5cc77b2b",
@@ -136,7 +135,7 @@ const MyOrders = () => {
                       <Text style={{ color: colors.primary, fontWeight:500 }}>{" "}Orders</Text>
                       </Text>
               </View>
-              <OrdersList orders={orderDummyData} currency={"P"}/>
+              <OrdersList orders={orderDummyData} currency={"₱"}/>
     </View>
   )
 }

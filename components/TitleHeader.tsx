@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const TitleHeader = ({title}:{title:string}) => {
+const TitleHeader = ({title }:{title:string}) => {
   const { colors } = useTheme();
   // const styles = useHomeStyles();
   const router = useRouter()
@@ -16,7 +16,7 @@ const TitleHeader = ({title}:{title:string}) => {
         <View style={styles.titleActions}>
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => {router.push('/cart')}}
+            onPress={() => {router.back()}}
           >
             <View
               style={[styles.addButton]}

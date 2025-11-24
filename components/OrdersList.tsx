@@ -39,17 +39,27 @@ const OrdersList = ({
             resizeMode="cover"
           />
           <View style={styles.productText}>
-            <Text style={styles.productNames}>
-              {item.items
-                .map((i) => `${i.product.name} x ${i.quantity}`)
-                .join(", ")}
-            </Text>
+            <View>
+              
+              <Text style={styles.productNames}>
+                {item.items
+                  .map((i) => `${i.product.name} x ${i.quantity}`)
+                  .join(", ")}
+              </Text>
+            <View style={styles.justifiedSection}>
             <Text>Items: {item.items.length}</Text>
+          <Text style={styles.amountText}>
+            {currency}
+            {item.amount}
+          </Text>
+        </View>
+            </View>
+            
           </View>
         </View>
 
         {/* Address */}
-        <View style={styles.addressSection}>
+        {/* <View style={styles.addressSection}>
           <Text>
             <Text style={styles.addressName}>{item.address?.fullName}</Text>
             {"\n"}
@@ -59,24 +69,19 @@ const OrdersList = ({
             {"\n"}
             {item.address?.phoneNumber}
           </Text>
-        </View>
+        </View> */}
 
         {/* Amount */}
-        <View style={styles.amountSection}>
-          <Text style={styles.amountText}>
-            {currency}
-            {item.amount}
-          </Text>
-        </View>
+        
 
         {/* Payment & Date */}
-        <View style={styles.paymentSection}>
+        {/* <View style={styles.paymentSection}>
           <Text>
             <Text>Method: COD{"\n"}</Text>
             <Text>Date: {new Date(item.date).toLocaleDateString()}{"\n"}</Text>
             <Text>Payment: {item.status || "Pending"}</Text>
           </Text>
-        </View>
+        </View> */}
       </View>
     );
   };
@@ -117,7 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   productText: {
-    flexDirection: "column",
+    flexDirection: "row",
     justifyContent: "space-between",
   },
   productNames: {
@@ -130,8 +135,12 @@ const styles = StyleSheet.create({
   addressName: {
     fontWeight: "500",
   },
-  amountSection: {
+  justifiedSection: {
     marginVertical: 5,
+    flexDirection:"row",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingRight:15,
   },
   amountText: {
     fontWeight: "500",

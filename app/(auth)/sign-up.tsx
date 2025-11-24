@@ -1,112 +1,161 @@
-import { useSignUp } from '@clerk/clerk-expo'
-import { Link, useRouter } from 'expo-router'
-import * as React from 'react'
-import { Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { useHomeStyles } from '@/assets/styles/styles';
+import useTheme from '@/hooks/useTheme';
+import { useSignUp } from '@clerk/clerk-expo';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Link, useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function SignUpScreen() {
-  const { isLoaded, signUp, setActive } = useSignUp()
-  const router = useRouter()
+  const { isLoaded, signUp, setActive } = useSignUp();
+  const router = useRouter();
 
-  const [emailAddress, setEmailAddress] = React.useState('')
-  const [password, setPassword] = React.useState('')
-  const [pendingVerification, setPendingVerification] = React.useState(false)
-  const [code, setCode] = React.useState('')
+  const [emailAddress, setEmailAddress] = useState('');
+  const [password, setPassword] = useState('');
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [code, setCode] = useState('');
 
-  // Handle submission of sign-up form
+  const homeStyles = useHomeStyles();
+  const { colors } = useTheme();
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 20,
+      justifyContent: 'center',
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: 'bold',
+      marginBottom: 20,
+      textAlign: 'center',
+      color: colors.text,
+    },
+    input: {
+      borderWidth: 1,
+      borderColor: '#ccc',
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      marginBottom: 15,
+      fontSize: 16,
+      color: colors.text,
+    },
+    button: {
+      backgroundColor: colors.primary,
+      borderRadius: 8,
+      paddingVertical: 12,
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    buttonText: {
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    signInContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+    },
+    signInText: {
+      color: colors.primary,
+      fontWeight: 'bold',
+    },
+  });
+
   const onSignUpPress = async () => {
-    if (!isLoaded) return
+    if (!isLoaded) return;
 
-    console.log(emailAddress, password)
-
-    // Start sign-up process using email and password provided
     try {
-      await signUp.create({
-        emailAddress,
-        password,
-      })
-
-      // Send user an email with verification code
-      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
-
-      // Set 'pendingVerification' to true to display second form
-      // and capture OTP code
-      setPendingVerification(true)
+      await signUp.create({ emailAddress, password });
+      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
+      setPendingVerification(true);
     } catch (err) {
-      // See https://clerk.com/docs/guides/development/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2))
+      console.error('Sign-up error:', JSON.stringify(err, null, 2));
     }
-  }
+  };
 
-  // Handle submission of verification form
   const onVerifyPress = async () => {
-    if (!isLoaded) return
+    if (!isLoaded) return;
 
     try {
-      // Use the code the user provided to attempt verification
-      const signUpAttempt = await signUp.attemptEmailAddressVerification({
-        code,
-      })
-
-      // If verification was completed, set the session to active
-      // and redirect the user
+      const signUpAttempt = await signUp.attemptEmailAddressVerification({ code });
       if (signUpAttempt.status === 'complete') {
-        await setActive({ session: signUpAttempt.createdSessionId })
-        router.replace('/')
+        await setActive({ session: signUpAttempt.createdSessionId });
+        router.replace('/');
       } else {
-        // If the status is not complete, check why. User may need to
-        // complete further steps.
-        console.error(JSON.stringify(signUpAttempt, null, 2))
+        console.error('Verification incomplete:', JSON.stringify(signUpAttempt, null, 2));
       }
     } catch (err) {
-      // See https://clerk.com/docs/guides/development/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2))
+      console.error('Verification error:', JSON.stringify(err, null, 2));
     }
-  }
+  };
 
   if (pendingVerification) {
     return (
-      <>
-        <Text>Verify your email</Text>
-        <TextInput
-          value={code}
-          placeholder="Enter your verification code"
-          onChangeText={(code) => setCode(code)}
-        />
-        <TouchableOpacity onPress={onVerifyPress}>
-          <Text>Verify</Text>
-        </TouchableOpacity>
-      </>
-    )
+      <LinearGradient colors={colors.gradients.background} style={homeStyles.container}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Verify your email</Text>
+          <TextInput
+            style={styles.input}
+            value={code}
+            placeholder="Enter verification code"
+            placeholderTextColor="#999"
+            onChangeText={setCode}
+          />
+          <TouchableOpacity style={styles.button} onPress={onVerifyPress}>
+            <Text style={styles.buttonText}>Verify</Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
+    );
   }
 
   return (
-    <View>
-      <>
-        <Text>Sign up</Text>
+    <LinearGradient colors={colors.gradients.background} style={homeStyles.container}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Create an Account</Text>
+
         <TextInput
+          style={styles.input}
           autoCapitalize="none"
           value={emailAddress}
           placeholder="Enter email"
-          onChangeText={(email) => setEmailAddress(email)}
+          placeholderTextColor="#999"
+          onChangeText={setEmailAddress}
         />
+
         <TextInput
+          style={styles.input}
           value={password}
           placeholder="Enter password"
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
+          placeholderTextColor="#999"
+          secureTextEntry
+          onChangeText={setPassword}
         />
-        <TouchableOpacity onPress={onSignUpPress}>
-          <Text>Continue</Text>
+
+        <TouchableOpacity style={styles.button} onPress={onSignUpPress}>
+          <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
-        <View style={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
-          <Text>Already have an account?</Text>
+
+        <View style={styles.signInContainer}>
+          <Text style={{color: colors.text}}>Already have an account? </Text>
           <Link href="/sign-in">
-            <Text>Sign in</Text>
+            <Text style={styles.signInText}>Sign in</Text>
           </Link>
         </View>
-      </>
-    </View>
-  )
+
+        
+        <View style={{justifyContent: "center", alignItems: "center", flexDirection: "row", marginTop:10}}>
+            <Link href="/">
+              <Ionicons name="arrow-back" color={colors.primary}/>
+              <Text style={{color: colors.primary}}>Back to Home</Text>
+            </Link>
+        </View>
+
+
+      </View>
+    </LinearGradient>
+  );
 }

@@ -1,5 +1,6 @@
+import { ThemeProvider } from '@/hooks/useTheme'
 import { useAuth } from '@clerk/clerk-expo'
-import { Redirect, Stack } from 'expo-router'
+import { Redirect, Slot } from 'expo-router'
 
 export default function AuthRoutesLayout() {
   const { isSignedIn } = useAuth()
@@ -8,5 +9,9 @@ export default function AuthRoutesLayout() {
     return <Redirect href={'/'} />
   }
 
-  return <Stack />
+  return (
+    <ThemeProvider>
+      <Slot />
+    </ThemeProvider>
+)
 }

@@ -2,12 +2,13 @@ import useTheme from '@/hooks/useTheme'
 import { Ionicons } from '@expo/vector-icons'
 import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { SignOutButton } from './SignOutButton'
 
-const UserProfile = () => {
+const UserProfile = ({email}) => {
   const userDummyData = {
     _id: "user_2sZFHS1UIIysJyDVzCpQhUhTIhw",
     name: "Patrick Perez",
-    email: "email@example.com",
+    email,
     imageUrl: "https://media.istockphoto.com/id/476085198/photo/businessman-silhouette-as-avatar-or-default-profile-picture.webp?a=1&b=1&s=612x612&w=0&k=20&c=2BRV7hQGz5K3wBj47U8VdlFUB44iDiUshJ4IZw5zmLk=",
     cartItems: {},
     __v: 0
@@ -38,6 +39,7 @@ const UserProfile = () => {
               style={[styles.addButton]}
             >
               <Ionicons name='create' size={20} color={colors.primary} />
+              <SignOutButton />
             </View>
           </TouchableOpacity>
         </View>
