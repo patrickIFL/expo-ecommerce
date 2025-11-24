@@ -10,12 +10,12 @@ const MyOrders = () => {
 
    const orderDummyData = [
   {
-    "_id": "67a20934b3db72db5cc77b2b",
+    "id": "67a20934b3db72db5cc77b2b",
     "userId": "user_2sZFHS1UIIysJyDVzCpQhUhTIhw",
     "items": [
       {
         "product": {
-          "_id": "67a1f4e43f34a77b6dde9144",
+          "id": "67a1f4e43f34a77b6dde9144",
           "userId": "user_2sZFHS1UIIysJyDVzCpQhUhTIhw",
           "name": "Apple AirPods Pro",
           "description": "Apple AirPods Pro (2nd Gen) with MagSafe Case (USB-C) provide excellent sound, active noise cancellation, and a comfortable fit.",
@@ -29,12 +29,12 @@ const MyOrders = () => {
           "__v": 0
         },
         "quantity": 1,
-        "_id": "67a20934b3db72db5cc77b2c"
+        "id": "67a20934b3db72db5cc77b2c"
       }
     ],
     "amount": 399.99,
     "address": {
-      "_id": "67a1e4233f34a77b6dde9055",
+      "id": "67a1e4233f34a77b6dde9055",
       "userId": "user_2sZFHS1UIIysJyDVzCpQhUhTIhw",
       "fullName": "GreatStack",
       "phoneNumber": "09123456789",
@@ -49,12 +49,12 @@ const MyOrders = () => {
     "__v": 0
   },
   {
-    "_id": "67a20949b3db72db5cc77b2e",
+    "id": "67a20949b3db72db5cc77b2e",
     "userId": "user_2sZFHS1UIIysJyDVzCpQhUhTIhw",
     "items": [
       {
         "product": {
-          "_id": "67a1f52e3f34a77b6dde914a",
+          "id": "67a1f52e3f34a77b6dde914a",
           "userId": "user_2sZFHS1UIIysJyDVzCpQhUhTIhw",
           "name": "Bose QuietComfort 45",
           "description": "The Bose QuietComfort 45 headphones deliver exceptional sound and noise cancellation for all-day listening.",
@@ -68,12 +68,12 @@ const MyOrders = () => {
           "__v": 0
         },
         "quantity": 2,
-        "_id": "67a20949b3db72db5cc77b2f"
+        "id": "67a20949b3db72db5cc77b2f"
       }
     ],
     "amount": 659.98,
     "address": {
-      "_id": "67a1e4233f34a77b6dde9056",
+      "id": "67a1e4233f34a77b6dde9056",
       "userId": "user_2sZFHS1UIIysJyDVzCpQhUhTIhw",
       "fullName": "TechStack",
       "phoneNumber": "09876543210",
@@ -88,12 +88,12 @@ const MyOrders = () => {
     "__v": 0
   },
   {
-    "_id": "67a2095ab3db72db5cc77b30",
+    "id": "67a2095ab3db72db5cc77b30",
     "userId": "user_2sZFHS1UIIysJyDVzCpQhUhTIhw",
     "items": [
       {
         "product": {
-          "_id": "67a1f5663f34a77b6dde914c",
+          "id": "67a1f5663f34a77b6dde914c",
           "userId": "user_2sZFHS1UIIysJyDVzCpQhUhTIhw",
           "name": "Samsung Galaxy S23",
           "description": "Samsung Galaxy S23 with top-tier AMOLED display and premium performance.",
@@ -107,12 +107,12 @@ const MyOrders = () => {
           "__v": 0
         },
         "quantity": 1,
-        "_id": "67a2095ab3db72db5cc77b31"
+        "id": "67a2095ab3db72db5cc77b31"
       }
     ],
     "amount": 799.99,
     "address": {
-      "_id": "67a1e4233f34a77b6dde9057",
+      "id": "67a1e4233f34a77b6dde9057",
       "userId": "user_2sZFHS1UIIysJyDVzCpQhUhTIhw",
       "fullName": "MobileStack",
       "phoneNumber": "09112223344",

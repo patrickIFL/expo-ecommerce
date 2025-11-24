@@ -1,5 +1,11 @@
 import useTheme from "@/hooks/useTheme";
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+
+
+const screenWidth = Dimensions.get("window").width;
+const cardWidth = (screenWidth - 10 * 3) / 2; 
+// left padding 10 + right padding 10 + gap 10
+
 
 export interface ColorScheme {
   bg: string;
@@ -347,18 +353,18 @@ export const useHomeStyles = () => {
     },
 
   row: {
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    gap: 10
-  },
+  justifyContent: "space-between",
+  paddingHorizontal: 10,
+  marginBottom: 10,
+},
 
-  card: {
-    flex: 1,
-    marginVertical: 5,
-    backgroundColor: colors.surface,
-    borderRadius: 10,
-    elevation: 2, // Android shadow
-  },
+card: {
+  width: cardWidth,   // 💥 FIX: exact width for 2 columns
+  backgroundColor: colors.surface,
+  borderRadius: 10,
+  overflow: "hidden",
+  elevation: 2,
+},
 
   image: {
     width: '100%',

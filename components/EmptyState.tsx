@@ -12,11 +12,11 @@ const EmptyState = () => {
     <View style={homeStyles.emptyContainer}>
       {/* Big clipboard Circle */}
       <LinearGradient colors={colors.gradients.empty} style={homeStyles.emptyIconContainer}>
-        <Ionicons name="clipboard-outline" size={60} color={colors.textMuted} />
+        <Ionicons name="cart-outline" size={60} color={colors.textMuted} />
       </LinearGradient>
 
-      <Text style={homeStyles.emptyText}>No todos yet!</Text>
-      <Text style={homeStyles.emptySubtext}>Add your first todo above to get started</Text>
+      <Text style={homeStyles.emptyText}>Coming Soon</Text>
+      <Text style={homeStyles.emptySubtext}>We are working on something great. Check again soon!</Text>
 
     </View>
   );

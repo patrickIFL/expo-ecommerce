@@ -1,4 +1,3 @@
-import { productsDummyData } from '@/assets/assets.js';
 import { useHomeStyles } from '@/assets/styles/styles';
 import useTheme from '@/hooks/useTheme';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -6,7 +5,7 @@ import React from 'react';
 import { FlatList, Image, Text, View } from 'react-native';
 import EmptyState from './EmptyState';
 
-const ProductsList = () => {
+const ProductsList = ({products}) => {
     const {colors} = useTheme();
     const styles = useHomeStyles();
 
@@ -54,9 +53,9 @@ const ProductsList = () => {
         </View>
 
       <FlatList
-        data={productsDummyData}
+        data={products}
         renderItem={renderProductItem}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item) => item.id}
         numColumns={2}                   // 👈 This creates a 2-column grid
         columnWrapperStyle={styles.row}  // spacing between items
         ListEmptyComponent={<EmptyState />}
