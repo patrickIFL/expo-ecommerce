@@ -19,7 +19,7 @@ const ProgressStats = () => {
     <LinearGradient colors={colors.gradients.surface} style={styles.section}>
 
       <Text style={styles.sectionTitle}>
-        Progress Stats
+        Orders
       </Text>
 
       <View style={styles.statsContainer}>

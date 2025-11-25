@@ -1,9 +1,11 @@
+import useTheme from '@/hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 
 const LoadingSpinner = ({ size = 48, color = '#000' }: { size?: number; color?: string }) => {
   const rotateAnim = useRef(new Animated.Value(0)).current;
+  const {colors} = useTheme()
 
   useEffect(() => {
     const spin = () => {
@@ -26,9 +28,9 @@ const LoadingSpinner = ({ size = 48, color = '#000' }: { size?: number; color?: 
   return (
     <View style={styles.container}>
       <Animated.View style={{ transform: [{ rotate }] }}>
-        <Ionicons name="cog-outline" size={size} color={color} />
+        <Ionicons name="cog-outline" size={size} color={colors.text} />
       </Animated.View>
-      <Text>Loading</Text>
+      <Text style={{color: colors.text}}>Loading</Text>
     </View>
   );
 };
@@ -39,6 +41,6 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: '50%',
+    height: '100%',
   },
 });

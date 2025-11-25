@@ -1,11 +1,11 @@
 import { useSettingsStyles } from '@/assets/styles/styles';
 import Preferences from '@/components/Preferences';
 import ProgressStats from '@/components/ProgressStats';
+import TitleHeader from '@/components/TitleHeader';
 import useTheme from '@/hooks/useTheme';
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SettingsScreen = () => {
@@ -19,16 +19,7 @@ const SettingsScreen = () => {
     >
       <SafeAreaView style={styles.safeArea}>
         {/* Header Area */}
-        <View style={styles.header}>
-          <View style={styles.titleContainer}>
-            <LinearGradient
-              colors={colors.gradients.primary}
-              style={styles.iconContainer}>
-              <Ionicons name='settings' size={28} color={'#FFF'} />
-            </LinearGradient>
-            <Text style={styles.title}>Settings</Text>
-          </View>
-        </View>
+        <TitleHeader title="Settings" />
 
         <ScrollView
           style={styles.scrollView}

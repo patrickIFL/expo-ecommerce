@@ -13,7 +13,7 @@ const Orders = () => {
     <LinearGradient colors={colors.gradients.background} style={styles.container}>
           <StatusBar style={colors.statusBarStyle} />
           <SafeAreaView style={styles.safeArea}>
-            <TitleHeader title='Orders' />
+            <TitleHeader title='My Cart' />
     
           </SafeAreaView>
         </LinearGradient>
