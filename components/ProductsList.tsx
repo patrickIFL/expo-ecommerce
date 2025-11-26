@@ -1,7 +1,9 @@
 import { useHomeStyles } from '@/assets/styles/styles';
 import useTheme from '@/hooks/useTheme';
+import { useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import EmptyState from './EmptyState';
@@ -9,6 +11,37 @@ import EmptyState from './EmptyState';
 const ProductsList = ({ products }:{ products:any }) => {
   const { colors } = useTheme();
   const styles = useHomeStyles();
+  const router = useRouter();
+  const { getToken } = useAuth();
+
+  const handleAddToCart = async (productId:string) => {
+      try {
+          const token = await getToken();
+
+          const res = await fetch("https://next-ecommerce-silk-rho.vercel.app/api/cart/add", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                  productId: productId,
+                  quantity: 1
+              }),
+          });
+          const data = await res.json();
+
+          if (!res.ok) {
+              console.error("Add to cart error:", data);
+              return;
+          }
+
+          router.push("/cart");
+
+      } catch (err) {
+          console.error("Add to cart failed:", err);
+      }
+  };
 
   if (!products || products.length === 0) {
     return <EmptyState />;
@@ -70,6 +103,7 @@ const ProductsList = ({ products }:{ products:any }) => {
                   </View>
 
                   <TouchableOpacity
+                    onPress={() => {handleAddToCart(item.id)}}
                     style={{
                       paddingHorizontal: 10,
                       paddingVertical: 3,
@@ -77,7 +111,6 @@ const ProductsList = ({ products }:{ products:any }) => {
                       borderColor: colors.text,
                       borderRadius: 50,
                     }}
-                    onPress={() => console.log("Buy now")}
                   >
                     <Text style={{ fontSize: 12, color: colors.text }}>Buy now</Text>
                   </TouchableOpacity>

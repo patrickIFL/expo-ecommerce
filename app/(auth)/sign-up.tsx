@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -13,11 +13,27 @@ export default function SignUpScreen() {
 
   const [emailAddress, setEmailAddress] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState('');
 
+  // 👉 Track focus
+  const [focus, setFocus] = useState("none");
+
   const homeStyles = useHomeStyles();
   const { colors } = useTheme();
+
+  // Base input style
+  const baseInput = {
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 15,
+    fontSize: 16,
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -32,16 +48,31 @@ export default function SignUpScreen() {
       textAlign: 'center',
       color: colors.text,
     },
+
     input: {
-      borderWidth: 1,
+      ...baseInput,
       borderColor: '#ccc',
-      borderRadius: 8,
-      paddingHorizontal: 12,
-      paddingVertical: 10,
-      marginBottom: 15,
-      fontSize: 16,
       color: colors.text,
     },
+    inputFocused: {
+      ...baseInput,
+      borderColor: colors.primary,
+      color: colors.text,
+    },
+
+    nameInputs: {
+      ...baseInput,
+      borderColor: '#ccc',
+      color: colors.text,
+      flex: 1,
+    },
+    nameInputsFocused: {
+      ...baseInput,
+      borderColor: colors.primary,
+      color: colors.text,
+      flex: 1,
+    },
+
     button: {
       backgroundColor: colors.primary,
       borderRadius: 8,
@@ -64,11 +95,37 @@ export default function SignUpScreen() {
     },
   });
 
+  // -----------------------------
+  // VALIDATION
+  // -----------------------------
+  const validateFields = () => {
+    if (!firstName.trim() || !lastName.trim() || !emailAddress.trim() || !password.trim() || !confirmPassword.trim()) {
+      Alert.alert("Missing fields", "Please fill out all fields.");
+      return false;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert("Password mismatch", "Passwords do not match.");
+      return false;
+    }
+    return true;
+  };
+
+  // -----------------------------
+  // SIGNUP HANDLER
+  // -----------------------------
   const onSignUpPress = async () => {
     if (!isLoaded) return;
 
+    if (!validateFields()) return;
+
     try {
-      await signUp.create({ emailAddress, password });
+      await signUp.create({
+        emailAddress,
+        password,
+        firstName,
+        lastName,
+      });
+
       await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
       setPendingVerification(true);
     } catch (err) {
@@ -76,34 +133,44 @@ export default function SignUpScreen() {
     }
   };
 
-  const onVerifyPress = async () => {
-    if (!isLoaded) return;
+const onVerifyPress = async () => {
+  if (!isLoaded) return;
 
-    try {
-      const signUpAttempt = await signUp.attemptEmailAddressVerification({ code });
-      if (signUpAttempt.status === 'complete') {
-        await setActive({ session: signUpAttempt.createdSessionId });
-        router.replace('/');
-      } else {
-        console.error('Verification incomplete:', JSON.stringify(signUpAttempt, null, 2));
-      }
-    } catch (err) {
-      console.error('Verification error:', JSON.stringify(err, null, 2));
+  try {
+    const signUpAttempt = await signUp.attemptEmailAddressVerification({ code });
+
+    if (signUpAttempt.status === "complete") {
+      await setActive({ session: signUpAttempt.createdSessionId });
+      router.replace("/");
+      return;
     }
-  };
 
+    console.error("Verification incomplete:", JSON.stringify(signUpAttempt, null, 2));
+  } catch (err: any) {
+    console.error("Verification error:", JSON.stringify(err, null, 2));
+  }
+};
+
+
+
+  // -----------------------------
+  // VERIFY SCREEN
+  // -----------------------------
   if (pendingVerification) {
     return (
       <LinearGradient colors={colors.gradients.background} style={homeStyles.container}>
         <View style={styles.container}>
           <Text style={styles.title}>Verify your email</Text>
+
           <TextInput
-            style={styles.input}
+            style={focus === "verify" ? styles.inputFocused : styles.input}
             value={code}
             placeholder="Enter verification code"
             placeholderTextColor="#999"
+            onFocus={() => setFocus("verify")}
             onChangeText={setCode}
           />
+
           <TouchableOpacity style={styles.button} onPress={onVerifyPress}>
             <Text style={styles.buttonText}>Verify</Text>
           </TouchableOpacity>
@@ -112,27 +179,64 @@ export default function SignUpScreen() {
     );
   }
 
+  // -----------------------------
+  // SIGN-UP UI
+  // -----------------------------
   return (
     <LinearGradient colors={colors.gradients.background} style={homeStyles.container}>
       <View style={styles.container}>
         <Text style={styles.title}>Create an Account</Text>
 
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <TextInput
+            style={focus === "firstName" ? styles.nameInputsFocused : styles.nameInputs}
+            autoCapitalize="words"
+            value={firstName}
+            placeholder="First Name"
+            placeholderTextColor="#999"
+            onFocus={() => setFocus("firstName")}
+            onChangeText={setFirstName}
+          />
+
+          <TextInput
+            style={focus === "lastName" ? styles.nameInputsFocused : styles.nameInputs}
+            autoCapitalize="words"
+            value={lastName}
+            placeholder="Last Name"
+            placeholderTextColor="#999"
+            onFocus={() => setFocus("lastName")}
+            onChangeText={setLastName}
+          />
+        </View>
+
         <TextInput
-          style={styles.input}
+          style={focus === "email" ? styles.inputFocused : styles.input}
           autoCapitalize="none"
           value={emailAddress}
           placeholder="Enter email"
           placeholderTextColor="#999"
+          onFocus={() => setFocus("email")}
           onChangeText={setEmailAddress}
         />
 
         <TextInput
-          style={styles.input}
+          style={focus === "password" ? styles.inputFocused : styles.input}
+          secureTextEntry
           value={password}
           placeholder="Enter password"
           placeholderTextColor="#999"
-          secureTextEntry
+          onFocus={() => setFocus("password")}
           onChangeText={setPassword}
+        />
+
+        <TextInput
+          style={focus === "confirmPassword" ? styles.inputFocused : styles.input}
+          secureTextEntry
+          value={confirmPassword}
+          placeholder="Confirm password"
+          placeholderTextColor="#999"
+          onFocus={() => setFocus("confirmPassword")}
+          onChangeText={setConfirmPassword}
         />
 
         <TouchableOpacity style={styles.button} onPress={onSignUpPress}>
@@ -140,21 +244,18 @@ export default function SignUpScreen() {
         </TouchableOpacity>
 
         <View style={styles.signInContainer}>
-          <Text style={{color: colors.text}}>Already have an account? </Text>
+          <Text style={{ color: colors.text }}>Already have an account? </Text>
           <Link href="/sign-in">
             <Text style={styles.signInText}>Sign in</Text>
           </Link>
         </View>
 
-        
-        <View style={{justifyContent: "center", alignItems: "center", flexDirection: "row", marginTop:10}}>
-            <Link href="/">
-              <Ionicons name="arrow-back" color={colors.primary}/>
-              <Text style={{color: colors.primary}}>Back to Home</Text>
-            </Link>
+        <View style={{ justifyContent: "center", alignItems: "center", flexDirection: "row", marginTop: 10 }}>
+          <Link href="/">
+            <Ionicons name="arrow-back" color={colors.primary} />
+            <Text style={{ color: colors.primary }}>Back to Home</Text>
+          </Link>
         </View>
-
-
       </View>
     </LinearGradient>
   );
