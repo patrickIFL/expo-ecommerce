@@ -80,8 +80,8 @@ const Orders = () => {
                 padding: 10
               }}
             >
-              {cartItems.map((item, i) => (
-                <CartCard key={i} item={item} />
+              {cartItems.map((item) => (
+                <CartCard key={item.id} item={item} />
               ))}
             </View>
           )}

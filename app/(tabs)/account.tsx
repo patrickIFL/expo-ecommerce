@@ -61,7 +61,7 @@ const Account = () => {
             />
           }
         >
-          <UserProfile email={user?.emailAddresses[0].emailAddress} />
+          <UserProfile />
           <MyOrders />
 
         </ScrollView>
