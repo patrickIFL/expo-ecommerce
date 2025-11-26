@@ -315,7 +315,14 @@ export const useHomeStyles = () => {
     emptyContainer: {
       alignItems: "center",
       justifyContent: "center",
-      paddingVertical: 80,
+      paddingTop: 40,
+      paddingBottom: 10,
+    },
+    addressContainer: {
+      alignItems: "center",
+      justifyContent: "center",
+      paddingTop: 30,
+      paddingBottom: 10,
     },
     emptyIconContainer: {
       width: 120,

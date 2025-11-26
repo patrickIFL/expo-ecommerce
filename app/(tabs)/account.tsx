@@ -42,12 +42,10 @@ const Account = () => {
     >
       <StatusBar style={colors.statusBarStyle} />
       <SafeAreaView style={styles.safeArea}>
-        
-        <TitleHeader title="Account" />
 
         <View
           style={{
-            padding: 12,
+            paddingVertical: 12,
           }}
         >
           <SignedIn>
@@ -56,11 +54,12 @@ const Account = () => {
             <RefreshControl
               refreshing={isRefetching}
               onRefresh={() => {refetch()}}
-              tintColor={colors.text} // iOS indicator color
-              colors={[colors.text]} // Android indicator color
+              tintColor={colors.primary} // iOS indicator color
+              colors={[colors.primary]} // Android indicator color
             />
           }
         >
+          <TitleHeader title="Account" />
           <UserProfile />
           <MyOrders />
 

@@ -2,12 +2,15 @@ import useSignOut from "@/hooks/useSignOut";
 import useTheme from "@/hooks/useTheme";
 import { useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import LocationPin from "./LocationPin";
 
 const UserProfile = () => {
   const { handleSignOut } = useSignOut();
   const { user } = useUser();
+  const router =useRouter();
   // todo: handle edit Profile.
 
   const userData = {
@@ -80,9 +83,14 @@ const UserProfile = () => {
               }}
             >
               <Text style={styles.name}>{userData.name}</Text>
-              <TouchableOpacity activeOpacity={0.8}>
+              <TouchableOpacity 
+                activeOpacity={0.8}
+                onPress={() => {
+                  router.push('/addShippingAddress')
+                }}
+              >
                 <View style={[styles.addButton]}>
-                  <Ionicons name="create-sharp" size={20} color={colors.primary} />
+                  <LocationPin color={colors.primary} size={24}/>
                 </View>
               </TouchableOpacity>
             </View>
