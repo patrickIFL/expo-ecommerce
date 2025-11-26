@@ -1,5 +1,7 @@
 import { useHomeStyles } from '@/assets/styles/styles';
 import BottomControls from '@/components/BottomControls';
+import CartCard from '@/components/CartCard';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import TitleHeader from '@/components/TitleHeader';
 import useTheme from '@/hooks/useTheme';
 import { useAuth } from '@clerk/clerk-expo';
@@ -7,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Orders = () => {
@@ -64,68 +66,23 @@ const Orders = () => {
           }
         >
           {isLoading ? (
-            <Text style={{ color: colors.text, textAlign: 'center' }}>LoadingSpinner</Text>
+            <Text style={{ color: colors.text, textAlign: 'center' }}>
+              <LoadingSpinner />
+            </Text>
           ) : cartItems.length === 0 ? (
             <Text style={{ color: colors.text, textAlign: 'center' }}>Your cart is empty</Text>
           ) : (
             <View
               style={{
-                flexDirection: 'row',
+                flexDirection: 'column',
                 flexWrap: 'wrap',
                 justifyContent: 'space-between',
+                padding: 10
               }}
             >
-              {cartItems.map((item) => {
-                const product = item.product;
-                return (
-                  <View
-                    key={item.id}
-                    style={{
-                      width: '48%',
-                      marginBottom: 15,
-                      backgroundColor: colors.surface,
-                      borderRadius: 10,
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {product.image?.[0] && (
-                      <Image
-                        source={{ uri: product.image[0] }}
-                        style={{ width: '100%', height: 120 }}
-                        resizeMode="cover"
-                      />
-                    )}
-
-                    <View style={{ padding: 10 }}>
-                      <Text numberOfLines={1} style={{ color: colors.text, fontWeight: '600' }}>
-                        {product.name}
-                      </Text>
-                      <Text style={{ color: colors.textMuted, marginVertical: 5 }}>
-                        Quantity: {item.quantity}
-                      </Text>
-                      <Text style={{ color: colors.primary, fontWeight: 'bold' }}>
-                        ₱{product.offerPrice * item.quantity}
-                      </Text>
-
-                      <TouchableOpacity
-                        style={{
-                          marginTop: 10,
-                          paddingVertical: 5,
-                          paddingHorizontal: 10,
-                          borderWidth: 1,
-                          borderColor: colors.primary,
-                          borderRadius: 50,
-                        }}
-                        onPress={() => console.log('Checkout', item.id)}
-                      >
-                        <Text style={{ color: colors.primary, textAlign: 'center', fontSize: 12 }}>
-                          Buy now
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                );
-              })}
+              {cartItems.map((item, i) => (
+                <CartCard key={i} item={item} />
+              ))}
             </View>
           )}
         </ScrollView>
