@@ -42,8 +42,8 @@ export default function Index() {
             <RefreshControl
               refreshing={isRefetching}
               onRefresh={() => refetch()}
-              tintColor={colors.text}       // iOS indicator color
-              colors={[colors.text]}         // Android indicator color
+              tintColor={colors.primary}       // iOS indicator color
+              colors={[colors.primary]}         // Android indicator color
             />
           }
         >
