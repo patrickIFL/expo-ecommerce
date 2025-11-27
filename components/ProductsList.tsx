@@ -1,7 +1,5 @@
 import { useHomeStyles } from '@/assets/styles/styles';
 import useTheme from '@/hooks/useTheme';
-import { useAuth } from '@clerk/clerk-expo';
-import { useRouter } from 'expo-router';
 import React from 'react';
 import { Text, View } from 'react-native';
 import EmptyState from './EmptyState';
@@ -10,8 +8,6 @@ import ProductCard from './ProductCard';
 const ProductsList = ({ products }:{ products:any }) => {
   const { colors } = useTheme();
   const styles = useHomeStyles();
-  const router = useRouter();
-  const { getToken } = useAuth();
 
   if (!products || products.length === 0) {
     return <EmptyState />;

@@ -1,12 +1,13 @@
-import Truck from '@/components/Truck';
 import useTheme from '@/hooks/useTheme';
+import { formatMoney } from '@/utils/formatMoney';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Truck from './Truck';
 
-const BottomControls = ({ cartAmount }:{cartAmount:number}) => {
+const CheckoutBottomControls = ({ cartAmount, discount, shipping }:{cartAmount:number, discount:number, shipping:number}) => {
   const { colors } = useTheme();
   // const styles = useHomeStyles();
   const router = useRouter()
@@ -51,6 +52,18 @@ subtitle: {
   letterSpacing: -1,
   color: colors.textMuted,
 },
+discountText: {
+  fontSize: 12,
+  fontWeight: "400",
+  letterSpacing: -1,
+  color: colors.textMuted,
+},
+discountValue: {
+  fontSize: 12,
+  fontWeight: "400",
+  letterSpacing: -1,
+  color: colors.primary,
+},
 
 checkoutButton: {
   borderRadius: 28,
@@ -69,11 +82,30 @@ checkoutButton: {
       <View style={styles.headerTitleWrapper}>
         <View style={styles.titleActions}>
           <Text style={styles.subtitle}>Total:</Text>
-          <Text style={styles.title}>₱{cartAmount}</Text>
-          <View style={styles.shipping}>
-            <Truck color={colors.textMuted} size={15}/>
-            <Text style={styles.subtitle}>| ₱150</Text>
+          <Text style={styles.title}>₱{formatMoney(cartAmount)}</Text>
+          
+          {discount > 0 
+          ? (
+            <View style={styles.shipping}>
+              <Text style={styles.discountText}>Saved |</Text>
+              <Text style={styles.discountValue}>₱{formatMoney(discount)}</Text>
+            </View>
+          ) 
+          : (
+            <View style={styles.shipping}>
+              <Truck color={colors.textMuted} size={13}/>
+              <Text style={styles.discountText}>|{"  "} 
+                {shipping > 0 
+                ? (
+                  <Text>₱{formatMoney(shipping)}</Text>
+                ) 
+                : (
+                  <Text style={{fontWeight: 500}}>FREE</Text>
+                ) }</Text>
           </View>
+          )}
+          
+          
         </View>
 
         <View style={styles.titleActions}>
@@ -85,7 +117,7 @@ checkoutButton: {
                 colors={colors.gradients.primary}
               style={[styles.checkoutButton]}
             >
-            <Text style={{color: "white"}} >Check Out {`(1)`}</Text>
+            <Text style={{color: "white"}} >Place Order</Text>
               <Ionicons name='arrow-forward' size={15} color={"#fff"} />
 
             </LinearGradient>
@@ -98,6 +130,6 @@ checkoutButton: {
   )
 }
 
-export default BottomControls
+export default CheckoutBottomControls
 
 // used in topsearch bar
