@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Truck from "./Truck";
 
 const BottomControls = ({
@@ -93,6 +93,14 @@ const BottomControls = ({
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => {
+              if (cartCount === 0) {
+                Alert.alert(
+                  "Your Cart is Empty!", // Title
+                  "What will you pay if you don't have something to buy?", // Message
+                  [{ text: "OK" }]
+                );
+                return;
+              }
               router.push("/checkout");
             }}
           >

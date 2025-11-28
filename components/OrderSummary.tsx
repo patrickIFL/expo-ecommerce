@@ -10,18 +10,25 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { Button, Card, Divider, Modal, Portal } from "react-native-paper";
+
+interface propAddress {
+  id: string | null;
+  text: string;
+}
 
 interface CheckoutSummaryProps {
   cartCount: number;
   cartAmount: number;
-  tax:number; 
-  taxPercentage:number; 
-  total:number; 
-  shipping:number;
-  //   onApplyPromo?: (code: string) => void;
+  tax: number;
+  taxPercentage: number;
+  total: number;
+  shipping: number;
+
+  selectedAddress: propAddress;
+  setSelectedAddress: (address: propAddress) => void;
 }
 
 interface Address {
@@ -43,16 +50,17 @@ const OrderSummary: React.FC<CheckoutSummaryProps> = ({
   tax,
   taxPercentage,
   total,
-  shipping
+  shipping,
+  selectedAddress,
+  setSelectedAddress
 }) => {
   const [promoCode, setPromoCode] = useState("");
   const { colors } = useTheme();
   const [visible, setVisible] = useState(false);
   const { getToken } = useAuth();
-  const [selectedAddress, setSelectedAddress] = useState({
-    id: "",
-    text: "",
-  });
+  
+
+  
 
   const styles = StyleSheet.create({
     container: {
@@ -181,6 +189,8 @@ const OrderSummary: React.FC<CheckoutSummaryProps> = ({
     },
   });
 
+  
+
   return (
     <>
       {/* Content */}
@@ -234,16 +244,16 @@ const OrderSummary: React.FC<CheckoutSummaryProps> = ({
 
           <View style={styles.row}>
             <Text style={[styles.rowLabel, styles.grayText]}>Shipping Fee</Text>
-            <Text style={styles.rowValue}>{shipping > 0 ? shipping : "Free"}</Text>
+            <Text style={styles.rowValue}>
+              {shipping > 0 ? shipping : "Free"}
+            </Text>
           </View>
 
           <View style={styles.row}>
-            <Text style={[styles.rowLabel, styles.grayText]}>Tax ({taxPercentage*100}%)</Text>
-            <Text style={styles.rowValue}>
-
-              ₱{formatMoney(Math.floor(tax))}
-
+            <Text style={[styles.rowLabel, styles.grayText]}>
+              Tax ({taxPercentage * 100}%)
             </Text>
+            <Text style={styles.rowValue}>₱{formatMoney(Math.floor(tax))}</Text>
           </View>
 
           <View style={[styles.row, styles.totalRow]}>

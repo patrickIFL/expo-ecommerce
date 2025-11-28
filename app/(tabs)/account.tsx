@@ -3,13 +3,13 @@ import MyOrders from "@/components/MyOrders";
 import TitleHeader from "@/components/TitleHeader";
 import UserProfile from "@/components/UserProfile";
 import useTheme from "@/hooks/useTheme";
-import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
+import { SignedIn, SignedOut, useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   RefreshControl,
   ScrollView,
@@ -23,17 +23,41 @@ const Account = () => {
   const { colors } = useTheme();
   const styles = useHomeStyles();
   const router = useRouter();
-  const { user } = useUser();
+
+  const { getToken } = useAuth();
 
   const {
-    data: myOrders = [],
-    isLoading,
-    error,
+    data: myOrders,
     refetch,
-    isRefetching,} = useQuery({
-    queryKey: ['myOrders'],
-    queryFn: () => {}
+    isRefetching,
+  } = useQuery({
+    queryKey: ["myOrders"],
+    queryFn: async () => {
+      const token = await getToken();
+
+      const res = await fetch(
+        "https://next-ecommerce-silk-rho.vercel.app/api/order/fetch",
+        {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to load orders");
+      }
+
+      return data.orders;
+    },
   });
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   return (
     <LinearGradient
@@ -42,7 +66,6 @@ const Account = () => {
     >
       <StatusBar style={colors.statusBarStyle} />
       <SafeAreaView style={styles.safeArea}>
-
         <View
           style={{
             paddingVertical: 12,
@@ -50,20 +73,21 @@ const Account = () => {
         >
           <SignedIn>
             <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefetching}
-              onRefresh={() => {refetch()}}
-              tintColor={colors.primary} // iOS indicator color
-              colors={[colors.primary]} // Android indicator color
-            />
-          }
-        >
-          <TitleHeader title="Account" />
-          <UserProfile />
-          <MyOrders />
-
-        </ScrollView>
+              refreshControl={
+                <RefreshControl
+                  refreshing={isRefetching}
+                  onRefresh={() => {
+                    refetch();
+                  }}
+                  tintColor={colors.primary} // iOS indicator color
+                  colors={[colors.primary]} // Android indicator color
+                />
+              }
+            >
+              <TitleHeader title="Account" />
+              <UserProfile />
+              <MyOrders myOrders={myOrders} />
+            </ScrollView>
           </SignedIn>
           <SignedOut>
             <View style={styles.emptyContainer}>

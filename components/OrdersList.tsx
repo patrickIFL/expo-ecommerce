@@ -1,7 +1,8 @@
 import useTheme from "@/hooks/useTheme";
+import { formatMoney } from "@/utils/formatMoney";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  FlatList,
   Image,
   ScrollView,
   StyleSheet,
@@ -11,7 +12,6 @@ import {
 } from "react-native";
 import { Button, Card, Divider, Modal, Portal } from "react-native-paper";
 
-
 type OrderItem = {
   product: { name: string; image: string[] };
   quantity: number;
@@ -20,7 +20,7 @@ type OrderItem = {
 type Order = {
   _id: string;
   items: OrderItem[];
-  address: {
+  shippingAddress: {
     fullName: string;
     phoneNumber: string;
     area: string;
@@ -28,175 +28,189 @@ type Order = {
     province: string;
   };
   amount: number;
-  date: number;
+  orderDate: number;
   status?: string;
 };
 
-const OrdersList = ({ orders, currency = "₱" }: { orders: Order[]; currency?: string }) => {
+const OrdersList = ({
+  orders,
+  currency = "₱",
+}: {
+  orders: Order[];
+  currency?: string;
+}) => {
   const [visible, setVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const {colors} = useTheme();
+  const { colors } = useTheme();
 
   const openOrderDetails = (order: Order) => {
     setSelectedOrder(order);
     setVisible(true);
   };
 
-  const renderOrder = ({ item }: { item: Order }) => {
-    return (
-      <TouchableOpacity
-        style={[styles.orderCard, { borderBottomColor: colors.textMuted }]}
-        onPress={() => openOrderDetails(item)}
-      >
-        <View style={styles.productSection}>
-          <Image
-            source={{ uri: item.items[0].product.image[0] }}
-            style={styles.productImage}
-            resizeMode="cover"
-          />
-
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.productNames, { color: colors.text }]}>
-              {item.items.map((i) => `${i.product.name} x ${i.quantity}`).join(", ")}
-            </Text>
-
-            <View style={styles.justifiedSection}>
-              <Text style={{ color: colors.text }}>
-                Items: {item.items.length}
-              </Text>
-
-              <Text style={[styles.amountText, { color: colors.primary }]}>
-                {currency}
-                {item.amount}
-              </Text>
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
   return (
     <>
-      <FlatList
-        data={orders}
-        renderItem={renderOrder}
-        keyExtractor={(item) => item._id}
-        contentContainerStyle={styles.container}
-      />
+      {/* EMPTY STATE */}
+      {orders.length === 0 && (
+        <View style={styles.emptyState}>
+          <Image
+            style={styles.emptyImage}
+            resizeMode="contain"
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/512/7465/7465691.png",
+            }}
+          />
 
-      {/* Modal */}
+          <Text style={[styles.emptyTitle, { color: colors.text }]}>
+            No Orders Yet
+          </Text>
+
+          <Text style={[styles.emptySubtitle, { color: colors.textMuted }]}>
+            Your orders will appear here once you make a purchase.
+          </Text>
+
+          <TouchableOpacity
+            onPress={() => router.push('/')}
+            style={{ marginTop: 18, backgroundColor: colors.primary, borderRadius: 50, paddingHorizontal: 15, paddingVertical: 8 }}
+          >
+            <Text style={{ color: "white" }}>Start Shopping</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* MAIN LIST */}
+      {orders.length > 0 && (
+        <ScrollView contentContainerStyle={styles.container}>
+          {orders.map((item) => (
+            <TouchableOpacity
+              key={item._id}
+              style={[styles.orderCard, { borderBottomColor: colors.textMuted }]}
+              onPress={() => openOrderDetails(item)}
+            >
+              <View style={styles.productSection}>
+                <Image
+                  source={{ uri: item.items[0].product.image[0] }}
+                  style={styles.productImage}
+                  resizeMode="cover"
+                />
+
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.productNames, { color: colors.text }]}>
+                    {item.items
+                      .map((i) => `${i.product.name} x ${i.quantity}`)
+                      .join(", ")}
+                  </Text>
+
+                  <View style={styles.justifiedSection}>
+                    <Text style={{ color: colors.text }}>
+                      Items: {item.items.length}
+                    </Text>
+
+                    <Text
+                      style={[styles.amountText, { color: colors.primary }]}
+                    >
+                      {currency}
+                      {formatMoney(item.amount)}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
+
+      {/* MODAL */}
       <Portal>
         <Modal
           visible={visible}
           onDismiss={() => setVisible(false)}
-          contentContainerStyle={[
-            styles.paperModal,
-          ]}
+          contentContainerStyle={[styles.paperModal]}
         >
           {selectedOrder && (
-            <Card
-              style={[
-                styles.card,
-                { backgroundColor: colors.surface },
-              ]}
-            >
+            <Card style={[styles.card, { backgroundColor: colors.surface }]}>
               <Card.Title
                 title="Order Details"
-                titleStyle={{ fontSize: 20, color: colors.text }}
+                titleStyle={{
+                  fontSize: 20,
+                  color: colors.text,
+                  fontWeight: "700",
+                }}
               />
 
               <Card.Content>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                  {/* Items */}
-                  <Text
-                    style={[
-                      styles.sectionHeader,
-                      { color: colors.text }
-                    ]}
-                  >
+                  {/* ITEMS */}
+                  <Text style={[styles.sectionHeader, { color: colors.text }]}>
                     Items
                   </Text>
 
                   {selectedOrder.items.map((i, index) => (
-                    <Text
-                      key={index}
-                      style={[styles.itemText, { color: colors.text }]}
-                    >
-                      • {i.product.name} x {i.quantity}
-                    </Text>
+                    <View key={index} style={{ marginBottom: 6 }}>
+                      <Text style={[styles.itemText, { color: colors.text }]}>
+                        • {i.product.name} × {i.quantity}
+                      </Text>
+                    </View>
                   ))}
 
                   <Divider style={{ marginVertical: 15 }} />
 
-                  {/* Address */}
-                  <Text
-                    style={[
-                      styles.sectionHeader,
-                      { color: colors.text }
-                    ]}
-                  >
+                  {/* ADDRESS */}
+                  <Text style={[styles.sectionHeader, { color: colors.text }]}>
                     Shipping Address
                   </Text>
 
                   <Text style={[styles.text, { color: colors.text }]}>
                     <Text style={styles.bold}>
-                      {selectedOrder.address.fullName}
+                      {selectedOrder.shippingAddress?.fullName}
                     </Text>
                     {"\n"}
-                    {selectedOrder.address.area}
+                    {selectedOrder.shippingAddress?.area}
                     {"\n"}
-                    {selectedOrder.address.city}, {selectedOrder.address.province}
+                    {selectedOrder.shippingAddress?.city},{" "}
+                    {selectedOrder.shippingAddress?.province}
                     {"\n"}
-                    {selectedOrder.address.phoneNumber}
+                    {selectedOrder.shippingAddress?.phoneNumber}
                   </Text>
 
                   <Divider style={{ marginVertical: 15 }} />
 
-                  {/* Payment */}
-                  <Text
-                    style={[
-                      styles.sectionHeader,
-                      { color: colors.text }
-                    ]}
-                  >
+                  {/* PAYMENT / STATUS */}
+                  <Text style={[styles.sectionHeader, { color: colors.text }]}>
                     Payment & Status
                   </Text>
 
                   <Text style={[styles.text, { color: colors.text }]}>
-                    Method: COD{"\n"}
-                    Date: {new Date(selectedOrder.date).toLocaleDateString()}
+                    Method: Cash on Delivery{"\n"}
+                    Date:{" "}
+                    {new Date(selectedOrder.orderDate).toLocaleDateString()}
                     {"\n"}
-                    Payment: {selectedOrder.status || "Pending"}
+                    Status: {selectedOrder.status || "Pending"}
                   </Text>
 
                   <Divider style={{ marginVertical: 15 }} />
 
-                  {/* Amount */}
-                  <Text
-                    style={[
-                      styles.sectionHeader,
-                      { color: colors.text }
-                    ]}
-                  >
+                  {/* TOTAL */}
+                  <Text style={[styles.sectionHeader, { color: colors.text }]}>
                     Total Amount
                   </Text>
 
                   <Text
-                    style={[
-                      styles.amountText,
-                      { color: colors.primary }
-                    ]}
+                    style={[styles.amountText, { color: colors.primary }]}
                   >
                     {currency}
-                    {selectedOrder.amount}
+                    {formatMoney(selectedOrder.amount)}
                   </Text>
                 </ScrollView>
               </Card.Content>
 
               <Card.Actions style={{ justifyContent: "center", marginTop: 10 }}>
-                <Button mode="contained" onPress={() => setVisible(false)} style={{backgroundColor: colors.primary}}>
-                  <Text style={{color: "white"}}>Close</Text>
+                <Button
+                  mode="contained"
+                  onPress={() => setVisible(false)}
+                  style={{ backgroundColor: colors.primary }}
+                >
+                  <Text style={{ color: "white" }}>Close</Text>
                 </Button>
               </Card.Actions>
             </Card>
@@ -244,17 +258,43 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
 
+  // EMPTY STATE
+  emptyState: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 120,
+    paddingHorizontal: 20,
+  },
+
+  emptyImage: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+    opacity: 0.85,
+  },
+
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 6,
+  },
+
+  emptySubtitle: {
+    fontSize: 14,
+    textAlign: "center",
+    maxWidth: 240,
+    lineHeight: 20,
+  },
+
   paperModal: {
     padding: 30,
   },
 
   card: {
     borderRadius: 16,
-    elevation: 0,          // remove Android shadow
-    shadowColor: "transparent", // remove iOS shadow
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0,
-    shadowRadius: 0,
+    elevation: 0,
+    shadowColor: "transparent",
   },
 
   sectionHeader: {
