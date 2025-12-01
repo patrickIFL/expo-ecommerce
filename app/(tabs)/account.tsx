@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useHomeStyles } from "@/assets/styles/styles";
 import MyOrders from "@/components/MyOrders";
 import TitleHeader from "@/components/TitleHeader";
@@ -16,7 +16,7 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { Modal, Portal } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -28,7 +28,6 @@ const Account = () => {
   const styles = useHomeStyles();
   const [visible, setVisible] = useState(false);
   const [selected, setSelected] = useState("");
-
 
   const { getToken, isLoaded, isSignedIn } = useAuth();
 
@@ -178,32 +177,43 @@ const Account = () => {
       </LinearGradient>
 
       <Portal>
-  <Modal
-    visible={visible}
-    onDismiss={() => setVisible(false)}
-    contentContainerStyle={{
-      backgroundColor: colors.surface,
-      padding: 24,
-      marginHorizontal: 10,
-      borderRadius: 16,
-    }}
-  >
-    <View style={{ alignItems: "center", justifyContent: "center" }}>
-      <View style={{ width: "100%" }}>
-        {selected === "login" 
-        ? (<SignInPage setVisible={setVisible} setSelected={setSelected} />)
-        : (<SignUpPage setVisible={setVisible} setSelected={setSelected} />)
-        }
-      </View>
-      
-                    <TouchableOpacity onPress={() => {setVisible(false)}} style={{justifyContent: "center", alignItems: "center", flexDirection: "row", marginTop:10, gap: 5}}>
-                      <Ionicons name="arrow-back" color={colors.textMuted}/>
-                      <Text style={{color: colors.textMuted}}>Back</Text>
-                    </TouchableOpacity>
-    </View>
-  </Modal>
-</Portal>
+        <Modal
+          visible={visible}
+          onDismiss={() => setVisible(false)}
+          contentContainerStyle={{
+            backgroundColor: colors.surface,
+            padding: 24,
+            marginHorizontal: 10,
+            borderRadius: 16,
+          }}
+        >
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <View style={{ width: "100%" }}>
+              {selected === "login" ? (
+                <SignInPage setVisible={setVisible} setSelected={setSelected} />
+              ) : (
+                <SignUpPage setVisible={setVisible} setSelected={setSelected} />
+              )}
+            </View>
 
+            <TouchableOpacity
+              onPress={() => {
+                setVisible(false);
+              }}
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+                marginTop: 10,
+                gap: 5,
+              }}
+            >
+              <Ionicons name="arrow-back" color={colors.textMuted} />
+              <Text style={{ color: colors.textMuted }}>Back</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </Portal>
     </>
   );
 };

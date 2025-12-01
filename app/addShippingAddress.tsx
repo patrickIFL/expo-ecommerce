@@ -1,14 +1,11 @@
 import { useHomeStyles } from "@/assets/styles/styles";
-import AddAddressIcon from "@/components/AddAddressIcon";
-import TitleHeader from "@/components/TitleHeader";
 import useTheme from "@/hooks/useTheme";
 import { useAuth } from "@clerk/clerk-expo";
 import axios from "axios";
-import { LinearGradient } from "expo-linear-gradient";
-import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
   Alert,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,7 +13,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 interface AddressForm {
   fullName: string;
@@ -146,7 +142,6 @@ const AddShippingAddress = () => {
       borderRadius: 8,
       paddingVertical: 12,
       alignItems: "center",
-      marginBottom: 20,
     },
 
     buttonDisabled: {
@@ -166,129 +161,114 @@ const AddShippingAddress = () => {
   });
 
   return (
-    <LinearGradient
-      colors={colors.gradients.background}
-      style={homestyles.container}
-    >
-      <StatusBar style={colors.statusBarStyle} />
-      <SafeAreaView style={homestyles.safeArea}>
-        <TitleHeader title="Addresses" />
-        
-        <ScrollView>
-          <View style={homestyles.addressContainer}>
-            <AddAddressIcon size={250} />
-            
-            <Text style={homestyles.title}>
-              Add Shipping{" "}
-              <Text style={{ color: colors.primary, fontWeight: "600" }}>
-                Address
-              </Text>
-            </Text>
+    
+    <ScrollView>
+      <View style={{ alignItems: "center" }}>
+        {/* <AddAddressIcon size={250} /> */}
+        <Image
+          style={{
+            width: 150,
+            height: 150,
+            marginBottom: 20,
+            opacity: 0.85,
+          }}
+          resizeMode="contain"
+          source={require("../assets/images/delivery-car.png")}
+        />
 
-            <Text style={homestyles.emptySubtext}>
-              Enter your address so we can deliver straight to your door!
-            </Text>
-          </View>
-          <View style={{ padding: 10, marginBottom: 300 }}>
-            <TextInput
-              style={focus === "fullName" ? styles.inputFocused : styles.input}
-              autoCapitalize="words"
-              value={address.fullName}
-              placeholder="Full name"
-              placeholderTextColor="#999"
-              onFocus={() => setFocus("fullName")}
-              onChangeText={(text) =>
-                setAddress({ ...address, fullName: text })
-              }
-            />
+        <Text style={homestyles.title}>
+          Add Shipping{" "}
+          <Text style={{ color: colors.primary, fontWeight: "600" }}>
+            Address
+          </Text>
+        </Text>
 
-            <View style={{ flexDirection: "row", gap: 10 }}>
-              <TextInput
-                style={
-                  focus === "phoneNumber"
-                    ? styles.spanTwoFocused
-                    : styles.spanTwo
-                }
-                autoCapitalize="none"
-                value={address.phoneNumber}
-                placeholder="Phone number"
-                placeholderTextColor="#999"
-                onFocus={() => setFocus("phoneNumber")}
-                onChangeText={(text) =>
-                  setAddress({ ...address, phoneNumber: text })
-                }
-              />
-              <TextInput
-                style={
-                  focus === "zipcode" ? styles.spanTwoFocused : styles.spanTwo
-                }
-                autoCapitalize="none"
-                value={address.zipcode}
-                placeholder="Zip code"
-                placeholderTextColor="#999"
-                onFocus={() => setFocus("zipcode")}
-                onChangeText={(text) =>
-                  setAddress({ ...address, zipcode: text })
-                }
-              />
-            </View>
-            <TextInput
-              style={focus === "area" ? styles.inputFocused : styles.input}
-              autoCapitalize="words"
-              value={address.area}
-              placeholder="Address (Area and Street)"
-              placeholderTextColor="#999"
-              onFocus={() => setFocus("area")}
-              onChangeText={(text) => setAddress({ ...address, area: text })}
-            />
-            <View style={{ flexDirection: "row", gap: 10 }}>
-              <TextInput
-                style={
-                  focus === "city" ? styles.spanTwoFocused : styles.spanTwo
-                }
-                autoCapitalize="words"
-                value={address.city}
-                placeholder="City/District/Town"
-                placeholderTextColor="#999"
-                onFocus={() => setFocus("city")}
-                onChangeText={(text) => setAddress({ ...address, city: text })}
-              />
-              <TextInput
-                style={
-                  focus === "province" ? styles.spanTwoFocused : styles.spanTwo
-                }
-                autoCapitalize="words"
-                value={address.province}
-                placeholder="Province"
-                placeholderTextColor="#999"
-                onFocus={() => setFocus("province")}
-                onChangeText={(text) =>
-                  setAddress({ ...address, province: text })
-                }
-              />
-            </View>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                loading && styles.buttonDisabled, // apply disabled style when loading
-              ]}
-              onPress={onSubmitHandler}
-              disabled={loading} // disable only when loading
-            >
-              <Text
-                style={[
-                  styles.buttonText,
-                  loading && styles.buttonTextDisabled,
-                ]}
-              >
-                {loading ? "LOADING..." : "ADD ADDRESS"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-        
-      </SafeAreaView>
-    </LinearGradient>
+        <Text style={homestyles.emptySubtext}>
+          Enter your address so we can deliver straight to your door!
+        </Text>
+      </View>
+      <View>
+        <TextInput
+          style={focus === "fullName" ? styles.inputFocused : styles.input}
+          autoCapitalize="words"
+          value={address.fullName}
+          placeholder="Full name"
+          placeholderTextColor="#999"
+          onFocus={() => setFocus("fullName")}
+          onChangeText={(text) => setAddress({ ...address, fullName: text })}
+        />
+
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <TextInput
+            style={
+              focus === "phoneNumber" ? styles.spanTwoFocused : styles.spanTwo
+            }
+            autoCapitalize="none"
+            value={address.phoneNumber}
+            placeholder="Phone number"
+            placeholderTextColor="#999"
+            onFocus={() => setFocus("phoneNumber")}
+            onChangeText={(text) =>
+              setAddress({ ...address, phoneNumber: text })
+            }
+          />
+          <TextInput
+            style={focus === "zipcode" ? styles.spanTwoFocused : styles.spanTwo}
+            autoCapitalize="none"
+            value={address.zipcode}
+            placeholder="Zip code"
+            placeholderTextColor="#999"
+            onFocus={() => setFocus("zipcode")}
+            onChangeText={(text) => setAddress({ ...address, zipcode: text })}
+          />
+        </View>
+        <TextInput
+          style={focus === "area" ? styles.inputFocused : styles.input}
+          autoCapitalize="words"
+          value={address.area}
+          placeholder="Address (Area and Street)"
+          placeholderTextColor="#999"
+          onFocus={() => setFocus("area")}
+          onChangeText={(text) => setAddress({ ...address, area: text })}
+        />
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <TextInput
+            style={focus === "city" ? styles.spanTwoFocused : styles.spanTwo}
+            autoCapitalize="words"
+            value={address.city}
+            placeholder="City/District/Town"
+            placeholderTextColor="#999"
+            onFocus={() => setFocus("city")}
+            onChangeText={(text) => setAddress({ ...address, city: text })}
+          />
+          <TextInput
+            style={
+              focus === "province" ? styles.spanTwoFocused : styles.spanTwo
+            }
+            autoCapitalize="words"
+            value={address.province}
+            placeholder="Province"
+            placeholderTextColor="#999"
+            onFocus={() => setFocus("province")}
+            onChangeText={(text) => setAddress({ ...address, province: text })}
+          />
+        </View>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            loading && styles.buttonDisabled, // apply disabled style when loading
+          ]}
+          onPress={onSubmitHandler}
+          disabled={loading} // disable only when loading
+        >
+          <Text
+            style={[styles.buttonText, loading && styles.buttonTextDisabled]}
+          >
+            {loading ? "LOADING..." : "ADD ADDRESS"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
