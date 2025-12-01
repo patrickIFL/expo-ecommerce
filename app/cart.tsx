@@ -5,12 +5,12 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import TitleHeader from "@/components/TitleHeader";
 import useCart from "@/hooks/useCart";
 import useTheme from "@/hooks/useTheme";
-import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
+  Image,
   RefreshControl,
   ScrollView,
   Text,
@@ -60,16 +60,16 @@ const Orders = () => {
           ) : cartItems.length === 0 ? (
             <View style={styles.emptyContainer}>
               {/* SignIn SignUp Page */}
-              <LinearGradient
-                colors={colors.gradients.empty}
-                style={styles.emptyIconContainer}
-              >
-                <Ionicons
-                  name="cart-outline"
-                  size={60}
-                  color={colors.textMuted}
-                />
-              </LinearGradient>
+              <Image
+                style={{
+                  width: 150,
+                  height: 150,
+                  marginBottom: 20,
+                  opacity: 0.85,
+                }}
+                resizeMode="contain"
+                source={require("../assets/images/cart_empty.png")}
+              />
 
               <Text style={styles.emptyText}>Your Cart is Empty!</Text>
               <Text style={styles.emptySubtext}>

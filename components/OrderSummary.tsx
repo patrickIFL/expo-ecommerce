@@ -59,9 +59,6 @@ const OrderSummary: React.FC<CheckoutSummaryProps> = ({
   const [visible, setVisible] = useState(false);
   const { getToken } = useAuth();
   
-
-  
-
   const styles = StyleSheet.create({
     container: {
       paddingHorizontal: 20,
@@ -189,8 +186,6 @@ const OrderSummary: React.FC<CheckoutSummaryProps> = ({
     },
   });
 
-  
-
   return (
     <>
       {/* Content */}
@@ -286,7 +281,7 @@ const OrderSummary: React.FC<CheckoutSummaryProps> = ({
               <ScrollView showsVerticalScrollIndicator={false}>
                 {/* Items */}
                 {addresses?.map((address) => (
-                  <>
+                  <View key={address.id}>
                     <TouchableOpacity
                       onPress={() => {
                         setSelectedAddress({
@@ -337,7 +332,7 @@ const OrderSummary: React.FC<CheckoutSummaryProps> = ({
                         backgroundColor: colors.textMuted,
                       }}
                     />
-                  </>
+                  </View>
                 ))}
               </ScrollView>
             </Card.Content>

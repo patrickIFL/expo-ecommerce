@@ -1,13 +1,10 @@
-import { useHomeStyles } from '@/assets/styles/styles';
 import useTheme from '@/hooks/useTheme';
 import { useSignUp } from '@clerk/clerk-expo';
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-export default function SignUpScreen() {
+export default function SignUpPage({setSelected, setVisible}:{setSelected:any, setVisible:any}) {
   const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
 
@@ -22,7 +19,6 @@ export default function SignUpScreen() {
   // 👉 Track focus
   const [focus, setFocus] = useState("none");
 
-  const homeStyles = useHomeStyles();
   const { colors } = useTheme();
 
   // Base input style
@@ -141,6 +137,7 @@ const onVerifyPress = async () => {
 
     if (signUpAttempt.status === "complete") {
       await setActive({ session: signUpAttempt.createdSessionId });
+      setVisible(false);
       router.replace("/");
       return;
     }
@@ -158,8 +155,8 @@ const onVerifyPress = async () => {
   // -----------------------------
   if (pendingVerification) {
     return (
-      <LinearGradient colors={colors.gradients.background} style={homeStyles.container}>
-        <View style={styles.container}>
+      
+        <>
           <Text style={styles.title}>Verify your email</Text>
 
           <TextInput
@@ -174,8 +171,7 @@ const onVerifyPress = async () => {
           <TouchableOpacity style={styles.button} onPress={onVerifyPress}>
             <Text style={styles.buttonText}>Verify</Text>
           </TouchableOpacity>
-        </View>
-      </LinearGradient>
+        </>
     );
   }
 
@@ -183,8 +179,7 @@ const onVerifyPress = async () => {
   // SIGN-UP UI
   // -----------------------------
   return (
-    <LinearGradient colors={colors.gradients.background} style={homeStyles.container}>
-      <View style={styles.container}>
+    <>
         <Text style={styles.title}>Create an Account</Text>
 
         <View style={{ flexDirection: "row", gap: 10 }}>
@@ -245,18 +240,16 @@ const onVerifyPress = async () => {
 
         <View style={styles.signInContainer}>
           <Text style={{ color: colors.text }}>Already have an account? </Text>
-          <Link href="/sign-in">
+          <TouchableOpacity onPress={() => {
+            setVisible(false)
+            setSelected("login")
+            setVisible(true)
+          }
+            }>
             <Text style={styles.signInText}>Sign in</Text>
-          </Link>
+          </TouchableOpacity>
         </View>
+    </>
 
-        <View style={{ justifyContent: "center", alignItems: "center", flexDirection: "row", marginTop: 10 }}>
-          <Link href="/">
-            <Ionicons name="arrow-back" color={colors.primary} />
-            <Text style={{ color: colors.primary }}>Back to Home</Text>
-          </Link>
-        </View>
-      </View>
-    </LinearGradient>
   );
 }

@@ -8,10 +8,9 @@ import useTheme from "@/hooks/useTheme";
 import { useAuth } from "@clerk/clerk-expo";
 import { useMutation } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { Alert, ScrollView, Text, View } from "react-native";
+import { Alert, Linking, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 interface propAddress {
@@ -31,65 +30,63 @@ const Checkout = () => {
 
 
   const { mutate: placeOrder } = useMutation({
-      mutationFn: async () => {
-        if (!cartItems || cartItems.length === 0) {
-          throw new Error("Cart Empty");
-        }
-  
-        if (!selectedAddress.id) {
-          throw new Error("Undefined Address");
-        }
-  
-        const token = await getToken();
+  mutationFn: async () => {
+    if (!cartItems || cartItems.length === 0) {
+      throw new Error("Cart Empty");
+    }
 
-        if (!cartItems || cartItems.length === 0) {
-        throw new Error("Cart Empty");
-      }
+    if (!selectedAddress || !selectedAddress.id) {
+      throw new Error("Undefined Address");
+    }
 
-      if (!selectedAddress) {
-        throw new Error("Undefined Address");
+    const token = await getToken();
+
+    const res = await fetch(
+      "https://next-ecommerce-silk-rho.vercel.app/api/order/create",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify({ selectedAddressId: selectedAddress.id, platform: "mobile" }),
       }
-  
-        const res = await fetch("https://next-ecommerce-silk-rho.vercel.app/api/order/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token ? `Bearer ${token}` : "",
-          },
-          body: JSON.stringify({ selectedAddressId: selectedAddress.id }),
-        });
-  
-        if (!res.ok) {
-          const err = await res.text();
-          throw new Error(err || "Failed to create order");
-        }
-  
-        return res.json();
-      },
-  
-      onSuccess: () => {
-        Alert.alert(
-          "✅ Order Placed!", // Title
-          "Your order has been successfully placed.", // Message
-          [{ text: "OK" }]
-        );
-        router.push('(tabs)/account')
-      },
-  
-      onError: (error) => {
-        let message: string = "";
-        if (error.message === "Cart Empty") {
-          message = "Your Cart is empty.";
-        } else if (error.message === "Undefined Address") {
-          message = "Select address or add a new one to proceed";
-        }
-        Alert.alert(
-          error.message, // Title
-          message, // Message
-          [{ text: "OK" }]
-        );
-      },
-    });
+    );
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err || "Failed to create order");
+    }
+
+    return res.json();
+  },
+
+  onSuccess: (data) => {
+    const { checkoutUrl } = data;
+
+    if (checkoutUrl) {
+      Linking.openURL(checkoutUrl).catch((err) =>
+        console.error("Failed to open URL:", err)
+      );
+    } else {
+      console.warn("No checkout URL returned from server");
+    }
+  },
+
+  onError: (error: any) => {
+    let message = "";
+
+    if (error.message === "Cart Empty") {
+      message = "Your cart is empty.";
+    } else if (error.message === "Undefined Address") {
+      message = "Select an address or add a new one to proceed.";
+    } else {
+      message = "Something went wrong. Please try again.";
+    }
+
+    Alert.alert(error.message, message, [{ text: "OK" }]);
+  },
+});
 
   return (
     <LinearGradient

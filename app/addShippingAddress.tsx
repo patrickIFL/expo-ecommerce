@@ -173,6 +173,7 @@ const AddShippingAddress = () => {
       <StatusBar style={colors.statusBarStyle} />
       <SafeAreaView style={homestyles.safeArea}>
         <TitleHeader title="Addresses" />
+        
         <ScrollView>
           <View style={homestyles.addressContainer}>
             <AddAddressIcon size={250} />
@@ -285,6 +286,7 @@ const AddShippingAddress = () => {
             </TouchableOpacity>
           </View>
         </ScrollView>
+        
       </SafeAreaView>
     </LinearGradient>
   );

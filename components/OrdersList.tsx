@@ -33,7 +33,7 @@ type Order = {
 };
 
 const OrdersList = ({
-  orders,
+  orders = [],
   currency = "₱",
 }: {
   orders: Order[];
@@ -52,13 +52,11 @@ const OrdersList = ({
     <>
       {/* EMPTY STATE */}
       {orders.length === 0 && (
-        <View style={styles.emptyState}>
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
           <Image
             style={styles.emptyImage}
             resizeMode="contain"
-            source={{
-              uri: "https://cdn-icons-png.flaticon.com/512/7465/7465691.png",
-            }}
+            source={require("../assets/images/empty.png")}
           />
 
           <Text style={[styles.emptyTitle, { color: colors.text }]}>
@@ -70,8 +68,14 @@ const OrdersList = ({
           </Text>
 
           <TouchableOpacity
-            onPress={() => router.push('/')}
-            style={{ marginTop: 18, backgroundColor: colors.primary, borderRadius: 50, paddingHorizontal: 15, paddingVertical: 8 }}
+            onPress={() => router.push("/")}
+            style={{
+              marginTop: 18,
+              backgroundColor: colors.primary,
+              borderRadius: 50,
+              paddingHorizontal: 15,
+              paddingVertical: 8,
+            }}
           >
             <Text style={{ color: "white" }}>Start Shopping</Text>
           </TouchableOpacity>
@@ -84,7 +88,10 @@ const OrdersList = ({
           {orders.map((item) => (
             <TouchableOpacity
               key={item._id}
-              style={[styles.orderCard, { borderBottomColor: colors.textMuted }]}
+              style={[
+                styles.orderCard,
+                { borderBottomColor: colors.textMuted },
+              ]}
               onPress={() => openOrderDetails(item)}
             >
               <View style={styles.productSection}>
@@ -95,11 +102,13 @@ const OrdersList = ({
                 />
 
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.productNames, { color: colors.text }]}>
-                    {item.items
-                      .map((i) => `${i.product.name} x ${i.quantity}`)
-                      .join(", ")}
-                  </Text>
+                  <View>
+                      <Text
+                        style={[styles.productNames, { color: colors.text }]}
+                      >
+                        {item.items[0].product.name} × {item.items[0].quantity}
+                      </Text>
+                  </View>
 
                   <View style={styles.justifiedSection}>
                     <Text style={{ color: colors.text }}>
@@ -195,9 +204,7 @@ const OrdersList = ({
                     Total Amount
                   </Text>
 
-                  <Text
-                    style={[styles.amountText, { color: colors.primary }]}
-                  >
+                  <Text style={[styles.amountText, { color: colors.primary }]}>
                     {currency}
                     {formatMoney(selectedOrder.amount)}
                   </Text>
